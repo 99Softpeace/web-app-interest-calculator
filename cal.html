@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Dynamic Interest Accumulation</title>
+    <style>
+        body {
+            margin: 0;
+  padding: 0;
+  height: 100vh;
+  overflow: hidden;
+  position: relative;
+            font-family: Arial, sans-serif;
+            background-repeat: no-repeat;
+            background-size: cover;
+            backdrop-filter: blur(50px); 
+            /* Black background */
+            color: #fff; /* White text color */
+            padding: 20px;
+            margin: 0;
+        }
+
+body::before {
+  content: "";
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('bg-image.jfif');
+  background-size: cover;
+  background-position: center;
+  background-color: rgba(0, 0, 0, 0.5); 
+  filter: blur(6px); /* Adjust the blur strength as needed */
+  z-index: -1; /* Place the pseudo-element behind the content */
+}
+
+
+        .container {
+            max-width: 600px;
+            margin: auto;
+            margin-top: 160px;
+            background: #000; /* White container background */
+            background-position: center;
+            padding: 20px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            color: #fff; /* Black text color */
+            border-radius: 20px;
+        }
+
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 60px; /* Set border radius to your desired value */
+            box-sizing: border-box;
+        }
+
+        input[type="number"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 60px; /* Set border radius to your desired value */
+            box-sizing: border-box;
+        }
+
+        label,
+        input,
+        button {
+            display: block;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button {
+            width: auto;
+            padding: 10px 20px;
+            background-color: #fff;
+            color: #000;
+            border: none;
+            border-radius: 20px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: rgb(107, 93, 93);
+        }
+
+        h2,
+        p {
+            color: #fff; /* Black text color */
+        }
+
+        @media only screen and (min-width: 601px) {
+            /* Styles for tablets, laptops, and larger screens */
+            .container {
+                max-width: 800px;
+            }
+        }
+
+        @media only screen and (min-width: 1024px) {
+            /* Styles for larger screens */
+            .container {
+                max-width: 1200px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>Dynamic 2000% APR Interest Calculator</h1>
+
+        <label for="name">Enter Your Name:</label>
+        <input type="text" id="name" name="name" placeholder="Your Name">
+
+        <label for="principal">Enter Principal Amount ($):</label>
+        <input type="number" id="principal" name="principal" value="1000">
+
+        <button onclick="startCalculation()">Start Accumulation</button>
+        <button onclick="stopCalculation()">Stop Calculation</button>
+
+        <h2>Accumulating Amount for <span id="displayName"></span>:</h2>
+        <p id="accumulatingAmount">Accumulating amount will be displayed here.</p>
+    </div>
+
+    <script>
+        let intervalId; // Variable to store the interval ID
+
+        function calculateCompoundInterest(principal, annualInterestRate, timesCompounded, years) {
+            let rateAsDecimal = annualInterestRate / 100;
+            let amount = principal * Math.pow(1 + (rateAsDecimal / timesCompounded), timesCompounded * years);
+            return amount;
+        }
+
+        function startCalculation() {
+            let principal = parseFloat(document.getElementById("principal").value);
+            let annualInterestRate = 2000; // 2000% APR
+            let timesCompounded = 1; // Compounded annually
+            let years = 1; // For one year
+
+            let totalAmount = calculateCompoundInterest(principal, annualInterestRate, timesCompounded, years);
+            let intervalDuration = 1000; // Interval duration in milliseconds
+            let numberOfIntervals = (365 * 24 * 60 * 60) / intervalDuration; // Number of intervals in a year
+            let incrementPerInterval = (totalAmount - principal) / numberOfIntervals;
+
+            let currentAmount = principal;
+
+            intervalId = setInterval(function () {
+                currentAmount += incrementPerInterval;
+                document.getElementById("accumulatingAmount").innerHTML = "$" + currentAmount.toFixed(2);
+                if (currentAmount >= totalAmount) clearInterval(intervalId);
+            }, intervalDuration);
+        }
+
+        function stopCalculation() {
+            clearInterval(intervalId);
+        }
+    </script>
+</body>
+
+</html>
